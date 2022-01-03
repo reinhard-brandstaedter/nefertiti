@@ -487,6 +487,14 @@ func (self *CryptoDotCom) Sell(
 		return err
 	}
 
+	flg = flag.Get("market")
+	markets := flg.Split()
+	if len(markets) > 1 || (len(markets) == 1 && markets[0] != "all") {
+		for _, market := range markets {
+			log.Printf("[DEBUG] market to consider for sell %s", market)
+		}
+	}
+
 	// get my filled orders
 	for _, market := range symbols {
 		var trades []exchange.Trade
