@@ -177,6 +177,7 @@ func (self *CryptoDotCom) getSymbols(client *exchange.Client, markets []string, 
 		var marketsonly []exchange.Symbol
 		for _, symbol := range filtered {
 			for _, market := range markets {
+				log.Print(symbol.Symbol)
 				if strings.EqualFold(symbol.Symbol, market) {
 					marketsonly = append(marketsonly, symbol)
 				}
