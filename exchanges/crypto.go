@@ -542,7 +542,7 @@ func (self *CryptoDotCom) Sell(
 			logger.Error(self.Name, err, level, service)
 		} else if mult, err = multiplier.Get(multiplier.FIVE_PERCENT); err != nil {
 			logger.Error(self.Name, err, level, service)
-		} else if symbols, err = self.getSymbols(client, quotes, false); err != nil {
+		} else if symbols, err = self.getSymbols(client, markets, quotes, false); err != nil {
 			logger.Error(self.Name, err, level, service)
 		}
 		// listen to the filled orders, look for newly filled orders, automatically place new LIMIT SELL orders.
