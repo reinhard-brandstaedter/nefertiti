@@ -183,6 +183,7 @@ func (self *CryptoDotCom) getSymbols(client *exchange.Client, markets []string, 
 			}
 
 		}
+		log.Print(marketsonly)
 		return marketsonly,nil
 	}	
 
