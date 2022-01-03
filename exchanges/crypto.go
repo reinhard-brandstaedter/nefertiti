@@ -508,6 +508,7 @@ func (self *CryptoDotCom) Sell(
 		}
 	}
 
+	log.Print(marketsymbols)
 	if symbols, err = self.getSymbols(client, marketsymbols, quotes, true); err != nil {
 		return err
 	}
