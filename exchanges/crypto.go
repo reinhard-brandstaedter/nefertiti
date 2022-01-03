@@ -491,7 +491,7 @@ func (self *CryptoDotCom) Sell(
 	markets := flg.Split()
 	if len(markets) > 1 || (len(markets) == 1 && markets[0] != "all") {
 		for _, market := range markets {
-			log.Printf("[DEBUG] market to consider for sell %s", market)
+			log.Printf("[DEBUG] market to consider for sell %s", strings.ToLower(strings.Replace(market, "_", "", -1)))
 		}
 	}
 
