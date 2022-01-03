@@ -500,13 +500,15 @@ func (self *CryptoDotCom) Sell(
 
 	flg = flag.Get("market")
 	markets := flg.Split()
+	var marketsymbols []string
 	if len(markets) > 1 || (len(markets) == 1 && markets[0] != "all") {
 		for _, market := range markets {
 			log.Printf("[DEBUG] market to consider for sell %s", strings.ToLower(strings.Replace(market, "_", "", -1)))
+			marketsymbols = append(marketsymbols,strings.ToLower(strings.Replace(market, "_", "", -1)))
 		}
 	}
 
-	if symbols, err = self.getSymbols(client, markets, quotes, true); err != nil {
+	if symbols, err = self.getSymbols(client, marketsymbols, quotes, true); err != nil {
 		return err
 	}
 
@@ -542,7 +544,7 @@ func (self *CryptoDotCom) Sell(
 			logger.Error(self.Name, err, level, service)
 		} else if mult, err = multiplier.Get(multiplier.FIVE_PERCENT); err != nil {
 			logger.Error(self.Name, err, level, service)
-		} else if symbols, err = self.getSymbols(client, markets, quotes, false); err != nil {
+		} else if symbols, err = self.getSymbols(client, marketsymbols, quotes, false); err != nil {
 			logger.Error(self.Name, err, level, service)
 		}
 		// listen to the filled orders, look for newly filled orders, automatically place new LIMIT SELL orders.
