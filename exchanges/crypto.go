@@ -136,7 +136,7 @@ type CryptoDotCom struct {
 func (self *CryptoDotCom) getSymbol(client *exchange.Client, name string) (*exchange.Symbol, error) {
 	cached := true
 	for {
-		symbols, err := self.getSymbols(client, nil, cached)
+		symbols, err := self.getSymbols(client, nil, nil, cached)
 		if err != nil {
 			return nil, err
 		}
@@ -152,7 +152,7 @@ func (self *CryptoDotCom) getSymbol(client *exchange.Client, name string) (*exch
 	}
 }
 
-func (self *CryptoDotCom) getSymbols(client *exchange.Client, quotes []string, cached bool) ([]exchange.Symbol, error) {
+func (self *CryptoDotCom) getSymbols(client *exchange.Client, markets []string, quotes []string, cached bool) ([]exchange.Symbol, error) {
 	if len(self.symbols) == 0 || !cached {
 		var err error
 		if self.symbols, err = client.Symbols(); err != nil {
@@ -172,6 +172,19 @@ func (self *CryptoDotCom) getSymbols(client *exchange.Client, quotes []string, c
 			}
 		}
 	}
+
+	if len(markets) > 0 {
+		var marketsonly []exchange.Symbol
+		for _, symbol := range filtered {
+			for _, market := range markets {
+				if strings.EqualFold(symbol.Symbol, market) {
+					marketsonly = append(marketsonly, symbol)
+				}
+			}
+
+		}
+		return marketsonly,nil
+	}	
 
 	return filtered, nil
 }
@@ -240,7 +253,7 @@ func (self *CryptoDotCom) GetClient(permission model.Permission, sandbox bool) (
 func (self *CryptoDotCom) GetMarkets(cached, sandbox bool, blacklist []string) ([]model.Market, error) {
 	var out []model.Market
 
-	symbols, err := self.getSymbols(exchange.New("", ""), nil, cached)
+	symbols, err := self.getSymbols(exchange.New("", ""), nil, nil, cached)
 	if err != nil {
 		return nil, err
 	}
@@ -483,9 +496,7 @@ func (self *CryptoDotCom) Sell(
 		flag.Set("quote", strings.Join(quotes, ","))
 	}
 
-	if symbols, err = self.getSymbols(client, quotes, true); err != nil {
-		return err
-	}
+	
 
 	flg = flag.Get("market")
 	markets := flg.Split()
@@ -493,6 +504,10 @@ func (self *CryptoDotCom) Sell(
 		for _, market := range markets {
 			log.Printf("[DEBUG] market to consider for sell %s", strings.ToLower(strings.Replace(market, "_", "", -1)))
 		}
+	}
+
+	if symbols, err = self.getSymbols(client, markets, quotes, true); err != nil {
+		return err
 	}
 
 	// get my filled orders
