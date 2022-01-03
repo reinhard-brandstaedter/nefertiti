@@ -505,8 +505,8 @@ func (self *CryptoDotCom) Sell(
 	var marketsymbols []string
 	if len(markets) > 1 || (len(markets) == 1 && markets[0] != "all") {
 		for _, market := range markets {
-			log.Printf("[DEBUG] market to consider for sell %s", strings.ToLower(strings.Replace(market, "_", "", -1)))
-			marketsymbols = append(marketsymbols,strings.ToLower(strings.Replace(market, "_", "", -1)))
+			log.Printf("[DEBUG] market to consider for sell %s", market)
+			marketsymbols = append(marketsymbols,market)
 		}
 	}
 
